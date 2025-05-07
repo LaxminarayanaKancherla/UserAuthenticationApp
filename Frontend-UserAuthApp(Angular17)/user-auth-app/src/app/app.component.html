@@ -1,0 +1,69 @@
+<div class="flex flex-col min-h-screen">
+  <nav class="bg-gradient-to-r from-blue-800 to-purple-900 p-4 shadow-lg fixed top-0 w-full z-50">
+    <div class="container mx-auto flex justify-between items-center">
+      <a href="#home" class="flex items-center text-white text-2xl font-bold font-poppins animate__animated animate__fadeIn">
+        <img src="/assets/images/logo.jpeg" alt="Logo" class="h-10 w-20 mr-2">
+        Trend
+      </a>
+      <div class="space-x-4 flex items-center">
+        <a href="#home" class="text-white hover:text-teal-300 transition font-roboto animate__animated animate__fadeIn animate__delay-1s">Home</a>
+        <a href="#about" class="text-white hover:text-teal-300 transition font-roboto animate__animated animate__fadeIn animate__delay-2s">About</a>
+        <a href="#services" class="text-white hover:text-teal-300 transition font-roboto animate__animated animate__fadeIn animate__delay-3s">Services</a>
+        <a href="#portfolio" class="text-white hover:text-teal-300 transition font-roboto animate__animated animate__fadeIn animate__delay-4s">Portfolio</a>
+        <ng-container *ngIf="isLoggedIn$ | async; else notLoggedIn">
+          <div class="relative">
+            <button class="text-white hover:text-teal-300 transition font-roboto flex items-center" (click)="toggleProfileDropdown()">
+              <img src="/assets/images/profile-icon.png" alt="Profile" class="w-8 h-8 rounded-full">
+            </button>
+            <div *ngIf="showProfileDropdown" class="absolute right-0 mt-2 w-96 bg-white shadow-xl rounded-lg z-50 animate__animated animate__fadeIn p-8">
+              <button class="absolute top-4 right-4 text-gray-600 hover:text-gray-800" (click)="showProfileDropdown = false">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+              <h2 class="text-2xl font-bold font-poppins mb-4 text-blue-800">Profile</h2>
+              <p class="text-gray-600 font-roboto mb-4">{{ authService.getUser()?.email || 'Loading...' }}</p>
+              <button (click)="navigateToProfile()" class="w-full bg-blue-600 text-white p-2 rounded-lg font-roboto hover:bg-blue-700 transition mb-2">Profile</button>
+              <button *ngIf="authService.getUserRole() === 'ADMIN'" (click)="navigateToDashboard()" class="w-full bg-blue-600 text-white p-2 rounded-lg font-roboto hover:bg-blue-700 transition mb-2">Dashboard</button>
+              <button (click)="logout()" class="w-full bg-red-600 text-white p-2 rounded-lg font-roboto hover:bg-red-700 transition">Logout</button>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #notLoggedIn>
+          <button (click)="showLogin()" class="text-white hover:text-teal-300 transition font-roboto">Login</button>
+          <a routerLink="/register" class="text-white hover:text-teal-300 transition font-roboto">Signup</a>
+        </ng-template>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 mt-16" (click)="closeLoginOnOutsideClick($event)">
+    <router-outlet></router-outlet>
+  </main>
+
+  <div *ngIf="showLoginSlider" class="fixed top-16 right-0 w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 animate__animated animate__slideInRight">
+    <div class="p-8">
+      <button class="absolute top-4 right-4 text-gray-600 hover:text-gray-800" (click)="closeLogin()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+      <h2 class="text-2xl font-bold font-poppins mb-6 text-blue-800">Login</h2>
+      <form (ngSubmit)="login()">
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 font-roboto mb-2">Email</label>
+          <input type="email" id="email" [(ngModel)]="loginData.email" name="email" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto" required>
+        </div>
+        <div class="mb-6">
+          <label for="password" class="block text-gray-700 font-roboto mb-2">Password</label>
+          <input type="password" id="password" [(ngModel)]="loginData.password" name="password" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto" required>
+        </div>
+        <button type="submit" class="w-full bg-blue-700 text-white p-3 rounded-lg font-roboto hover:bg-blue-800 transition">Login</button>
+        <button type="button" (click)="closeLogin()" class="w-full mt-4 text-gray-600 font-roboto hover:text-gray-800">Cancel</button>
+      </form>
+      <div *ngIf="loginError" class="mt-4 text-pink-600 font-roboto text-center">{{ loginError }}</div>
+    </div>
+  </div>
+
+  <footer class="bg-gradient-to-r from-blue-800 to-purple-900 text-white py-4 z-40">
+    <div class="container mx-auto text-center">
+      <p class="text-sm font-roboto">© 2025 Trend. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,39 @@
+section {
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+}
+
+form {
+  border-radius: 1rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  transition: transform 0.3s ease;
+}
+
+form:hover {
+  transform: translateY(-4px);
+}
+
+input {
+  border-color: #b0bec5;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #4dd0e1;
+}
+
+button {
+  background: linear-gradient(to right, #0288d1, #4fc3f7);
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+button:hover {
+  background: linear-gradient(to right, #0277bd, #29b6f6);
+}
+
+label {
+  color: #546e7a;
+}

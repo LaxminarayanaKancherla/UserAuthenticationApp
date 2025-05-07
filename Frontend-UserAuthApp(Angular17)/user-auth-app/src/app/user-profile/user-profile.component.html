@@ -1,0 +1,19 @@
+<div class="container mx-auto p-6">
+  <div class="relative bg-white shadow-xl rounded-lg p-6 max-w-md mx-auto">
+    <button class="absolute top-3 right-3 text-gray-600 hover:text-gray-800" (click)="close.emit()">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+    <h2 class="text-2xl font-bold font-poppins mb-4 text-blue-800">User Profile</h2>
+    <div *ngIf="user; else loading" class="text-center">
+      <p class="text-gray-600 font-roboto mb-2"><strong>Username:</strong> {{ user.username }}</p>
+      <p class="text-gray-600 font-roboto mb-2"><strong>Email:</strong> {{ user.email }}</p>
+      <p class="text-gray-600 font-roboto mb-2"><strong>Phone:</strong> {{ user.phone }}</p>
+      <p class="text-gray-600 font-roboto mb-2"><strong>Age:</strong> {{ user.age }}</p>
+      <p class="text-gray-600 font-roboto mb-4"><strong>Role:</strong> {{ user.role }}</p>
+      <button *ngIf="user" (click)="logout()" class="w-full bg-red-600 text-white p-1.5 rounded-lg text-xs font-roboto hover:bg-red-700 transition">Logout</button>
+    </div>
+    <ng-template #loading>
+      <p class="text-gray-600 font-roboto text-center">Loading...</p>
+    </ng-template>
+  </div>
+</div>

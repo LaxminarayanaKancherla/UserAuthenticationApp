@@ -1,0 +1,174 @@
+<section class="min-h-screen bg-gray-100 py-12">
+  <div class="container mx-auto p-4">
+    <!-- Top Navigation -->
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex space-x-4">
+        <button (click)="goBack()" class="bg-gray-600 text-white px-4 py-2 rounded-lg font-roboto hover:bg-gray-700 transition animate__animated animate__fadeIn">Back to Home</button>
+        <button (click)="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg font-roboto hover:bg-red-700 transition animate__animated animate__fadeIn">Logout</button>
+      </div>
+    </div>
+
+    <h2 class="text-3xl font-bold font-poppins mb-6 text-blue-800 text-center animate__animated animate__fadeIn">Admin Dashboard</h2>
+    <div *ngIf="errorMessage" class="mb-4 text-pink-600 font-roboto text-center">{{ errorMessage }}</div>
+
+    <!-- Manage Users -->
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold font-poppins text-blue-600">Manage Users</h3>
+        <button (click)="toggleAddUserForm()" class="bg-blue-700 text-white px-4 py-2 rounded-lg font-roboto hover:bg-blue-800 transition">
+          {{ showAddUserForm ? 'Cancel' : 'Add User' }}
+        </button>
+      </div>
+      <table class="w-full table-auto">
+        <thead>
+          <tr class="bg-blue-100">
+            <th class="px-4 py-2 text-left font-roboto">Email</th>
+            <th class="px-4 py-2 text-left font-roboto">Username</th>
+            <th class="px-4 py-2 text-left font-roboto">Phone</th>
+            <th class="px-4 py-2 text-left font-roboto">Age</th>
+            <th class="px-4 py-2 text-left font-roboto">Role</th>
+            <th class="px-4 py-2 text-left font-roboto">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users" class="border-b">
+            <td class="px-4 py-2 font-roboto">{{ user.email }}</td>
+            <td class="px-4 py-2 font-roboto">{{ user.username }}</td>
+            <td class="px-4 py-2 font-roboto">{{ user.phone }}</td>
+            <td class="px-4 py-2 font-roboto">{{ user.age }}</td>
+            <td class="px-4 py-2 font-roboto">{{ user.role }}</td>
+            <td class="px-4 py-2">
+              <button (click)="startEdit(user)" class="text-blue-600 hover:underline font-roboto mr-2">Edit</button>
+              <button (click)="deleteUser(user.email)" class="text-red-600 hover:underline font-roboto">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add User Form -->
+    <div *ngIf="showAddUserForm" class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-6 animate__animated animate__fadeInUp">
+      <h3 class="text-xl font-bold font-poppins mb-4 text-blue-600">Add New User</h3>
+      <form [formGroup]="addUserForm" (ngSubmit)="addUser()">
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Left Column -->
+          <div>
+            <div class="mb-3">
+              <label for="email" class="block text-gray-700 font-roboto text-sm mb-1">Email</label>
+              <input id="email" formControlName="email" type="email" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="addUserForm.get('email')?.invalid && addUserForm.get('email')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="addUserForm.get('email')?.errors?.['required']">Email is required</div>
+                <div *ngIf="addUserForm.get('email')?.errors?.['email']">Invalid email format</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="username" class="block text-gray-700 font-roboto text-sm mb-1">Username</label>
+              <input id="username" formControlName="username" type="text" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="addUserForm.get('username')?.invalid && addUserForm.get('username')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="addUserForm.get('username')?.errors?.['required']">Username is required</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="block text-gray-700 font-roboto text-sm mb-1">Password</label>
+              <input id="password" formControlName="password" type="password" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="addUserForm.get('password')?.invalid && addUserForm.get('password')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="addUserForm.get('password')?.errors?.['required']">Password is required</div>
+                <div *ngIf="addUserForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Column -->
+          <div>
+            <div class="mb-3">
+              <label for="phone" class="block text-gray-700 font-roboto text-sm mb-1">Phone</label>
+              <input id="phone" formControlName="phone" type="text" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="addUserForm.get('phone')?.invalid && addUserForm.get('phone')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="addUserForm.get('phone')?.errors?.['required']">Phone is required</div>
+                <div *ngIf="addUserForm.get('phone')?.errors?.['pattern']">Phone must be exactly 10 digits</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="age" class="block text-gray-700 font-roboto text-sm mb-1">Age</label>
+              <input id="age" formControlName="age" type="number" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="addUserForm.get('age')?.invalid && addUserForm.get('age')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="addUserForm.get('age')?.errors?.['required']">Age is required</div>
+                <div *ngIf="addUserForm.get('age')?.errors?.['min']">Age must be 0 or greater</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="role" class="block text-gray-700 font-roboto text-sm mb-1">Role</label>
+              <select id="role" formControlName="role" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+                <option value="USER">User</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button type="submit" [disabled]="addUserForm.invalid" class="w-full bg-blue-700 text-white p-2 rounded-lg text-sm font-roboto hover:bg-blue-800 transition mt-4">Add User</button>
+      </form>
+    </div>
+
+    <!-- Edit User Form -->
+    <div *ngIf="editUserForm.value.email" class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg mt-6 animate__animated animate__fadeInUp">
+      <h3 class="text-xl font-bold font-poppins mb-4 text-blue-600">Edit User</h3>
+      <form [formGroup]="editUserForm" (ngSubmit)="updateUser()">
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Left Column -->
+          <div>
+            <div class="mb-3">
+              <label for="edit-email" class="block text-gray-700 font-roboto text-sm mb-1">Email</label>
+              <input id="edit-email" formControlName="email" class="w-full p-2 border rounded-lg text-sm font-roboto bg-gray-100">
+            </div>
+            <div class="mb-3">
+              <label for="edit-username" class="block text-gray-700 font-roboto text-sm mb-1">Username</label>
+              <input id="edit-username" formControlName="username" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="editUserForm.get('username')?.invalid && editUserForm.get('username')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="editUserForm.get('username')?.errors?.['required']">Username is required</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="edit-password" class="block text-gray-700 font-roboto text-sm mb-1">Password (leave blank to keep unchanged)</label>
+              <input id="edit-password" formControlName="password" type="password" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="editUserForm.get('password')?.invalid && editUserForm.get('password')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="editUserForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Column -->
+          <div>
+            <div class="mb-3">
+              <label for="edit-phone" class="block text-gray-700 font-roboto text-sm mb-1">Phone</label>
+              <input id="edit-phone" formControlName="phone" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="editUserForm.get('phone')?.invalid && editUserForm.get('phone')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="editUserForm.get('phone')?.errors?.['required']">Phone is required</div>
+                <div *ngIf="editUserForm.get('phone')?.errors?.['pattern']">Phone must be exactly 10 digits</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="edit-age" class="block text-gray-700 font-roboto text-sm mb-1">Age</label>
+              <input id="edit-age" formControlName="age" type="number" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+              <div *ngIf="editUserForm.get('age')?.invalid && editUserForm.get('age')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="editUserForm.get('age')?.errors?.['required']">Age is required</div>
+                <div *ngIf="editUserForm.get('age')?.errors?.['min']">Age must be 0 or greater</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="edit-role" class="block text-gray-700 font-roboto text-sm mb-1">Role</label>
+              <select id="edit-role" formControlName="role" class="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto">
+                <option value="USER">User</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+              <div *ngIf="editUserForm.get('role')?.invalid && editUserForm.get('role')?.touched" class="text-red-500 text-sm">
+                <div *ngIf="editUserForm.get('role')?.errors?.['required']">Role is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex space-x-2 mt-4">
+          <button type="submit" [disabled]="editUserForm.invalid" class="w-full bg-blue-700 text-white p-2 rounded-lg text-sm font-roboto hover:bg-blue-800 transition">Update</button>
+          <button type="button" (click)="editUserForm.reset(); editUserForm.patchValue({ email: '' })" class="w-full bg-gray-600 text-white p-2 rounded-lg text-sm font-roboto hover:bg-gray-700 transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
