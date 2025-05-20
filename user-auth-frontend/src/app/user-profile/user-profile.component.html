@@ -1,0 +1,52 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-cyan-50 to-blue-100">
+  <!-- Profile Card View -->
+  <div *ngIf="!showEditForm" class="bg-white bg-opacity-50 p-8 rounded-lg shadow-lg text-center max-w-md mx-auto">
+    <img *ngIf="user.image" [src]="user.image" alt="Profile Picture" class="w-24 h-24 rounded-full mx-auto mb-4">
+    <h2 class="text-2xl font-bold font-poppins mb-2 text-blue-700">{{ user.username }}</h2>
+    <p class="text-lg font-roboto text-gray-600 mb-2">Email: {{ user.email }}</p>
+    <p class="text-lg font-roboto text-gray-600 mb-2">Phone: {{ user.phone }}</p>
+    <p class="text-lg font-roboto text-gray-600 mb-2">Age: {{ user.age }}</p>
+    <p class="text-lg font-roboto text-gray-600 mb-4">Role: {{ user.role }}</p>
+    <div class="flex gap-4 justify-center">
+      <button (click)="goBack()" class="btn btn-secondary px-6 py-3">Back</button>
+      <button (click)="toggleEditForm()" class="btn btn-primary px-6 py-3">Edit</button>
+    </div>
+  </div>
+
+  <!-- Edit Form View -->
+  <div *ngIf="showEditForm" class="bg-white bg-opacity-50 p-8 rounded-lg shadow-lg max-w-md mx-auto">
+    <h2 class="text-2xl font-bold mb-4 font-poppins text-blue-700 text-center">Edit Profile</h2>
+    <div class="mb-4 text-center">
+      <img *ngIf="user.image" [src]="user.image" class="w-24 h-24 rounded-full mx-auto mb-2" alt="Profile">
+      <input type="file" (change)="onFileSelected($event)" accept="image/png,image/jpeg" class="block w-full text-sm form-control">
+      <p class="text-sm text-gray-600 mt-1">Please upload image size below 200KB</p>
+    </div>
+    <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+      <div class="form-group mb-4" [ngClass]="{'focused': user.username, 'error': profileForm.submitted && !user.username}">
+        <label for="username">Username</label>
+        <input class="w-full form-control" id="username" name="username" [(ngModel)]="user.username" required minlength="3">
+        <div *ngIf="profileForm.submitted && !user.username" class="error-message">
+          <span>Username is required</span>
+        </div>
+      </div>
+      <div class="form-group mb-4" [ngClass]="{'focused': user.phone, 'error': profileForm.submitted && !user.phone}">
+        <label for="phone">Phone</label>
+        <input class="w-full form-control" id="phone" name="phone" [(ngModel)]="user.phone" required pattern="^\d{10}$">
+        <div *ngIf="profileForm.submitted && !user.phone" class="error-message">
+          <span>Phone number is required and must be 10 digits</span>
+        </div>
+      </div>
+      <div class="form-group mb-4" [ngClass]="{'focused': user.age, 'error': profileForm.submitted && !user.age}">
+        <label for="age">Age</label>
+        <input class="w-full form-control" type="number" id="age" name="age" [(ngModel)]="user.age" required min="0">
+        <div *ngIf="profileForm.submitted && !user.age" class="error-message">
+          <span>Age is required</span>
+        </div>
+      </div>
+      <div class="flex gap-4 justify-center">
+        <button class="btn btn-primary w-full" type="submit" [disabled]="!profileForm.valid">Update Profile</button>
+        <button type="button" class="btn btn-secondary w-full" (click)="toggleEditForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

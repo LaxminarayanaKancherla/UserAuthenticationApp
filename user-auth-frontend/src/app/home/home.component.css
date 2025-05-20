@@ -1,0 +1,64 @@
+/* Ensure hero section is responsive */
+.container {
+  max-width: 1200px;
+}
+
+/* Custom color overrides for logo colors and shades */
+.bg-\[\#23559b\] {
+  background-color: #23559b;
+}
+
+.bg-\[\#70419b\] {
+  background-color: #70419b;
+}
+
+.bg-\[\#00b0d6\] {
+  background-color: #00b0d6;
+}
+
+.bg-\[\#ba2f98\] {
+  background-color: #ba2f98;
+}
+
+.bg-\[\#b3e5fc\] {
+  background-color: #b3e5fc;
+}
+
+.bg-\[\#d1c4e9\] {
+  background-color: #d1c4e9;
+}
+
+.bg-\[\#f8bbd0\] {
+  background-color: #f8bbd0;
+}
+
+.text-\[\#23559b\] {
+  color: #23559b;
+}
+
+.text-\[\#70419b\] {
+  color: #70419b;
+}
+
+.focus\:ring-\[\#00b0d6\] {
+  --tw-ring-color: #00b0d6;
+}
+
+@media (max-width: 640px) {
+  .text-5xl {
+    font-size: 2.5rem;
+  }
+  .text-4xl {
+    font-size: 2rem;
+  }
+  .text-2xl {
+    font-size: 1.5rem;
+ 
+  }
+  .text-lg {
+    font-size: 1rem;
+  }
+  .grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}

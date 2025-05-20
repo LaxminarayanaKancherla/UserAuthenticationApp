@@ -1,0 +1,114 @@
+<div class="min-vh-100 bg-light pt-20">
+  <div class="container mx-auto p-4 p-md-6">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="text-3xl font-bold text-dark font-poppins">Admin Dashboard</h1>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary" (click)="navigateToProfile()">Profile</button>
+        <button class="btn btn-danger" (click)="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="text-danger mb-4 text-center font-roboto">{{ errorMessage }}</div>
+
+    <!-- Edit User Form -->
+    <div *ngIf="editUserId" class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="text-2xl font-semibold mb-4 text-dark font-poppins">Edit User</h2>
+        <form [formGroup]="editUserForm" (ngSubmit)="updateUser()" class="row g-3">
+          <div class="col-md-6">
+            <div class="form-group" [ngClass]="{'focused': editUserForm.get('email')?.touched || editUserForm.get('email')?.value}">
+              <label for="edit-email">Email</label>
+              <input id="edit-email" type="email" formControlName="email" class="form-control" [disabled]="true">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group" [ngClass]="{'focused': editUserForm.get('phone')?.touched || editUserForm.get('phone')?.value, 'error': editUserForm.get('phone')?.invalid && editUserForm.get('phone')?.touched}">
+              <label for="edit-phone">Phone</label>
+              <input id="edit-phone" type="text" formControlName="phone" class="form-control" (focus)="onFocus('phone')" (blur)="onBlur('phone')">
+              <div *ngIf="editUserForm.get('phone')?.invalid && editUserForm.get('phone')?.touched" class="error-message">
+                <span *ngIf="editUserForm.get('phone')?.hasError('required')">Phone is required</span>
+                <span *ngIf="editUserForm.get('phone')?.hasError('pattern')">Phone must be exactly 10 digits</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group" [ngClass]="{'focused': editUserForm.get('username')?.touched || editUserForm.get('username')?.value, 'error': editUserForm.get('username')?.invalid && editUserForm.get('username')?.touched}">
+              <label for="edit-username">Username</label>
+              <input id="edit-username" type="text" formControlName="username" class="form-control" (focus)="onFocus('username')" (blur)="onBlur('username')">
+              <div *ngIf="editUserForm.get('username')?.invalid && editUserForm.get('username')?.touched" class="error-message">
+                <span *ngIf="editUserForm.get('username')?.hasError('required')">Username is required</span>
+                <span *ngIf="editUserForm.get('username')?.hasError('minlength')">Username must be at least 3 characters</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group" [ngClass]="{'focused': editUserForm.get('age')?.touched || editUserForm.get('age')?.value, 'error': editUserForm.get('age')?.invalid && editUserForm.get('age')?.touched}">
+              <label for="edit-age">Age</label>
+              <input id="edit-age" type="number" formControlName="age" class="form-control" (focus)="onFocus('age')" (blur)="onBlur('age')">
+              <div *ngIf="editUserForm.get('age')?.invalid && editUserForm.get('age')?.touched" class="error-message">
+                <span *ngIf="editUserForm.get('age')?.hasError('required')">Age is required</span>
+                <span *ngIf="editUserForm.get('age')?.hasError('min')">Age must be at least 18</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group" [ngClass]="{'focused': editUserForm.get('role')?.touched || editUserForm.get('role')?.value, 'error': editUserForm.get('role')?.invalid && editUserForm.get('role')?.touched}">
+              <label for="edit-role">Role</label>
+              <select id="edit-role" formControlName="role" class="form-control" (focus)="onFocus('role')" (blur)="onBlur('role')">
+                <option *ngFor="let role of roles" [value]="role.name">{{ role.name }}</option>
+              </select>
+              <div *ngIf="editUserForm.get('role')?.invalid && editUserForm.get('role')?.touched" class="error-message">
+                <span *ngIf="editUserForm.get('role')?.hasError('required')">Role is required</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="edit-image">Profile Image</label>
+              <input id="edit-image" type="file" accept="image/png,image/jpeg" (change)="onFileChange($event, 'edit')" class="form-control">
+              <p class="text-sm text-gray-600 mt-1">Please upload image size below 200KB</p>
+            </div>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button type="submit" [disabled]="editUserForm.invalid" class="btn btn-primary">Update User</button>
+            <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- User List -->
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="text-2xl font-semibold mb-4 text-dark font-poppins">Manage Members</h2>
+        <table class="w-100">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Username</th>
+              <th>Phone</th>
+              <th>Age</th>
+              <th>Role</th>
+              <th>Image</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.email }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.age }}</td>
+              <td>{{ user.role }}</td>
+              <td><img [src]="user.image" alt="Profile" class="w-12 h-12 rounded-full object-cover"></td>
+              <td>
+                <button class="btn btn-warning me-2" (click)="editUser(user)">Edit</button>
+                <button class="btn btn-danger" (click)="deleteUser(user.email)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,148 @@
+<div class="container mx-auto p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">RoleMaster Dashboard</h1>
+    <div class="space-x-2">
+      <button (click)="navigateToProfile()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Profile</button>
+      <button (click)="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</button>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <button (click)="toggleAddForm()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+      {{ showAddForm && !selectedUser ? 'Cancel' : 'Add User' }}
+    </button>
+  </div>
+
+  <div *ngIf="showAddForm && !selectedUser" class="card shadow-sm mb-4">
+    <div class="card-header bg-gray-100 p-4">
+      <h2 class="text-xl font-semibold">Add New User</h2>
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="addUserForm" (ngSubmit)="addUser()">
+        <div class="mb-4 relative">
+          <input formControlName="email" type="email" placeholder="Email" (focus)="onFocus('email', true)" (blur)="onBlur('email', true)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['email'].add || addUserForm.get('email')?.hasError('required')}" />
+          <div *ngIf="addUserForm.get('email')?.hasError('required') && addUserForm.get('email')?.touched" class="text-red-500 text-sm">Email is required</div>
+          <div *ngIf="addUserForm.get('email')?.hasError('email') && addUserForm.get('email')?.touched" class="text-red-500 text-sm">Invalid email format</div>
+        </div>
+        <div class="mb-4 relative">
+          <input formControlName="phone" type="text" placeholder="Phone" (focus)="onFocus('phone', true)" (blur)="onBlur('phone', true)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['phone'].add || addUserForm.get('phone')?.hasError('required')}" />
+          <div *ngIf="addUserForm.get('phone')?.hasError('required') && addUserForm.get('phone')?.touched" class="text-red-500 text-sm">Phone is required</div>
+          <div *ngIf="addUserForm.get('phone')?.hasError('pattern') && addUserForm.get('phone')?.touched" class="text-red-500 text-sm">Phone must be 10 digits</div>
+        </div>
+        <div class="mb-4 relative">
+          <input formControlName="username" type="text" placeholder="Username" (focus)="onFocus('username', true)" (blur)="onBlur('username', true)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['username'].add || addUserForm.get('username')?.hasError('required')}" />
+          <div *ngIf="addUserForm.get('username')?.hasError('required') && addUserForm.get('username')?.touched" class="text-red-500 text-sm">Username is required</div>
+          <div *ngIf="addUserForm.get('username')?.hasError('minlength') && addUserForm.get('username')?.touched" class="text-red-500 text-sm">Username must be at least 3 characters</div>
+        </div>
+        <div class="mb-4 relative">
+          <input formControlName="age" type="number" placeholder="Age" (focus)="onFocus('age', true)" (blur)="onBlur('age', true)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['age'].add || addUserForm.get('age')?.hasError('required')}" />
+          <div *ngIf="addUserForm.get('age')?.hasError('required') && addUserForm.get('age')?.touched" class="text-red-500 text-sm">Age is required</div>
+          <div *ngIf="addUserForm.get('age')?.hasError('min') && addUserForm.get('age')?.touched" class="text-red-500 text-sm">Age must be at least 18</div>
+        </div>
+        <div class="mb-4 relative">
+          <input formControlName="password" type="password" placeholder="Password" (focus)="onFocus('password', true)" (blur)="onBlur('password', true)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['password'].add || addUserForm.get('password')?.hasError('required')}" />
+          <div *ngIf="addUserForm.get('password')?.hasError('required') && addUserForm.get('password')?.touched" class="text-red-500 text-sm">Password is required</div>
+          <div *ngIf="addUserForm.get('password')?.hasError('minlength') && addUserForm.get('password')?.touched" class="text-red-500 text-sm">Password must be at least 6 characters</div>
+        </div>
+        <div class="mb-4 relative">
+          <select formControlName="role" (focus)="onFocus('role', true)" (blur)="onBlur('role', true)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['role'].add || addUserForm.get('role')?.hasError('required')}">
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+          <div *ngIf="addUserForm.get('role')?.hasError('required') && addUserForm.get('role')?.touched" class="text-red-500 text-sm">Role is required</div>
+        </div>
+        <div class="mb-4 relative">
+          <input type="file" (change)="onFileChange($event, true)" accept="image/png,image/jpeg"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['image'].add || addUserForm.get('image')?.hasError('required')}" />
+        </div>
+        <button type="submit" [disabled]="addUserForm.invalid" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add User</button>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="selectedUser" class="card shadow-sm mb-4">
+    <div class="card-header bg-gray-100 p-4">
+      <h2 class="text-xl font-semibold">Edit User</h2>
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="editUserForm" (ngSubmit)="updateUser()">
+        <div class="mb-4 relative">
+          <input formControlName="email" type="email" placeholder="Email" [disabled]="true"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['email'].edit || editUserForm.get('email')?.hasError('required')}" />
+          <div *ngIf="editUserForm.get('email')?.hasError('required') && editUserForm.get('email')?.touched" class="text-red-500 text-sm">Email is required</div>
+          <div *ngIf="editUserForm.get('email')?.hasError('email') && editUserForm.get('email')?.touched" class="text-red-500 text-sm">Invalid email format</div>
+        </div>
+        <div class="mb-4 relative">
+          <input formControlName="phone" type="text" placeholder="Phone" (focus)="onFocus('phone', false)" (blur)="onBlur('phone', false)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['phone'].edit || editUserForm.get('phone')?.hasError('required')}" />
+          <div *ngIf="editUserForm.get('phone')?.hasError('required') && editUserForm.get('phone')?.touched" class="text-red-500 text-sm">Phone is required</div>
+          <div *ngIf="editUserForm.get('phone')?.hasError('pattern') && editUserForm.get('phone')?.touched" class="text-red-500 text-sm">Phone must be 10 digits</div>
+        </div>
+        <div class="mb-4 relative">
+          <input formControlName="username" type="text" placeholder="Username" (focus)="onFocus('username', false)" (blur)="onBlur('username', false)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['username'].edit || editUserForm.get('username')?.hasError('required')}" />
+          <div *ngIf="editUserForm.get('username')?.hasError('required') && editUserForm.get('username')?.touched" class="text-red-500 text-sm">Username is required</div>
+          <div *ngIf="editUserForm.get('username')?.hasError('minlength') && editUserForm.get('username')?.touched" class="text-red-500 text-sm">Username must be at least 3 characters</div>
+        </div>
+        <div class="mb-4 relative">
+          <input formControlName="age" type="number" placeholder="Age" (focus)="onFocus('age', false)" (blur)="onBlur('age', false)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['age'].edit || editUserForm.get('age')?.hasError('required')}" />
+          <div *ngIf="editUserForm.get('age')?.hasError('required') && editUserForm.get('age')?.touched" class="text-red-500 text-sm">Age is required</div>
+          <div *ngIf="editUserForm.get('age')?.hasError('min') && editUserForm.get('age')?.touched" class="text-red-500 text-sm">Age must be at least 18</div>
+        </div>
+        <div class="mb-4 relative">
+          <select formControlName="role" (focus)="onFocus('role', false)" (blur)="onBlur('role', false)"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['role'].edit || editUserForm.get('role')?.hasError('required')}">
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+          <div *ngIf="editUserForm.get('role')?.hasError('required') && editUserForm.get('role')?.touched" class="text-red-500 text-sm">Role is required</div>
+        </div>
+        <div class="mb-4 relative">
+          <input type="file" (change)="onFileChange($event, false)" accept="image/png,image/jpeg"
+            class="w-full p-2 border rounded focus:outline-none"
+            [ngClass]="{'focused': focusedFields['image'].edit || editUserForm.get('image')?.hasError('required')}" />
+        </div>
+        <div class="flex space-x-2">
+          <button type="submit" [disabled]="editUserForm.invalid" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Update User</button>
+          <button type="button" (click)="cancelEdit()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div *ngFor="let user of users" class="card shadow-sm">
+      <div class="card-body p-4 flex items-center space-x-4">
+        <img [src]="user.image ? 'data:image/jpeg;base64,' + user.image : '/assets/images/default-profile.jpg'" alt="Profile" class="w-12 h-12 rounded-full object-cover">
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold">{{ user.username }}</h3>
+          <p class="text-gray-600">{{ user.email }}</p>
+          <p class="text-gray-600">Role: {{ user.role }}</p>
+          <p class="text-gray-600">Phone: {{ user.phone }}</p>
+          <p class="text-gray-600">Age: {{ user.age }}</p>
+        </div>
+        <div class="flex space-x-2">
+          <button (click)="editUser(user)" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Edit</button>
+          <button (click)="deleteUser(user.email)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

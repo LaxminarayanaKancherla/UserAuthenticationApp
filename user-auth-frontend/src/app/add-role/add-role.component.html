@@ -1,0 +1,64 @@
+<div class="min-vh-100 bg-light pt-20">
+  <div class="container mx-auto p-4 p-md-6">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="text-3xl font-bold text-dark font-poppins">Manage Roles</h1>
+      <button class="btn btn-secondary" (click)="goBack()">Back to Dashboard</button>
+    </div>
+
+    <div *ngIf="errorMessage" class="text-danger mb-4 text-center font-roboto">{{ errorMessage }}</div>
+
+    <!-- Add Role Form -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="text-2xl font-semibold mb-4 text-dark font-poppins">Add New Role</h2>
+        <form (ngSubmit)="createRole()" #roleForm="ngForm">
+          <div class="form-group mb-4" [ngClass]="{'focused': newRoleName}">
+            <label for="roleName">Role Name</label>
+            <input id="roleName" name="roleName" [(ngModel)]="newRoleName" class="form-control w-full" required>
+            <div *ngIf="roleForm.submitted && !newRoleName" class="error-message">
+              <span>Role name is required</span>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-full" [disabled]="!roleForm.valid">Create Role</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Roles List -->
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="text-2xl font-semibold mb-4 text-dark font-poppins">Existing Roles</h2>
+        <table class="w-100">
+          <thead>
+            <tr>
+              <th>Role Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let role of roles">
+              <td>
+                <ng-container *ngIf="editRole && editRole.oldName === role.name; else showName">
+                  <input [(ngModel)]="editRole.newName" name="editRoleName" class="form-control" (keyup.enter)="updateRole()" required>
+                </ng-container>
+                <ng-template #showName>{{ role.name }}</ng-template>
+              </td>
+              <td>
+                <ng-container *ngIf="editRole && editRole.oldName === role.name; else showButtons">
+                  <button class="btn btn-success me-2" (click)="updateRole()">Save</button>
+                  <button class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+                </ng-container>
+                <ng-template #showButtons>
+                  <button class="btn btn-warning me-2" (click)="startEdit(role)">Edit</button>
+                  <button class="btn btn-danger" (click)="deleteRole(role.name)">Delete</button>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

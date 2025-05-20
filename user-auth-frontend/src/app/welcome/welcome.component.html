@@ -1,0 +1,18 @@
+<section class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-cyan-100 to-blue-300 text-center" [@sectionFadeIn]>
+  <div *ngIf="currentUser" class="welcome-section w-full max-w-4xl mx-auto px-6">
+    <div class="flex items-center justify-center mb-8 relative">
+      <img *ngIf="currentUser.image" [src]="currentUser.image" alt="Profile Picture" class="w-32 h-32 rounded-full border-4 border-cyan-400 transition-transform duration-300 hover:scale-110 z-10">
+      <div class="text-container ml-8 transform transition-transform duration-700 ease-out" [ngClass]="{'animate-text': currentUser}">
+        <h1 class="text-4xl font-bold font-poppins tracking-tight" id="h1">
+          Welcome, {{ currentUser.username }}
+        </h1>
+        <p class="text-lg font-roboto text-cyan-200 mt-2">
+          Elevate Your Experience with Trend Innovations
+        </p>
+      </div>
+    </div>
+    <button (click)="goToProfile()" class="btn-professional px-10 py-4 rounded-md font-roboto text-white bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 transition-all duration-300 text-lg font-semibold">
+      Go to Profile
+    </button>
+  </div>
+</section>

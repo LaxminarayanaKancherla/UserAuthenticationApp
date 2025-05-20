@@ -1,0 +1,24 @@
+<div class="fixed top-16 left-1/2 transform -translate-x-1/2 w-80 bg-white shadow-lg rounded-lg z-[200]"
+     [@slideInOut]="showLogin ? 'in' : 'out'">
+  <div class="p-6 relative">
+    <!-- Cross (X) Button on Left Edge -->
+    <button (click)="closeLogin()" class="absolute left-4 top-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    <h2 class="text-xl font-bold mb-4 font-poppins text-center">Login</h2>
+    <form (ngSubmit)="login()">
+      <div class="mb-4 form-group">
+        <label class="block text-sm font-medium mb-1" for="email">Email</label>
+        <input class="w-full form-control" id="email" [(ngModel)]="email" name="email" required email>
+      </div>
+      <div class="mb-4 form-group">
+        <label class="block text-sm font-medium mb-1" for="password">Password</label>
+        <input class="w-full form-control" id="password" [(ngModel)]="password" name="password" type="password" required>
+      </div>
+      <button class="w-full btn btn-primary mb-2" type="submit">Login</button>
+      <button (click)="closeLogin()" class="w-full btn btn-secondary" type="button">Cancel</button>
+    </form>
+  </div>
+</div>
